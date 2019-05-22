@@ -1,0 +1,107 @@
+function USIG(calle,altura,dato){
+  
+  try{    
+    if (dato == 'long'){       
+   var  dato1 = "direccionesNormalizadas/0/coordenadas/x";
+   var url = "http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion="+calle+"+"+altura+"%2C+caba&geocodificar=TRUE&metodo=puertas";
+    }
+    else if (dato == 'lat') {
+   var dato1 = "direccionesNormalizadas/0/coordenadas/y";
+   var url = "http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion="+calle+"+"+altura+"%2C+caba&geocodificar=TRUE&metodo=puertas";   
+    }
+        else if (dato == 'calle') {
+   var dato1 = "direccionesNormalizadas/0/nombre_calle";
+   var url = "http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion="+calle+"+"+altura+"%2C+caba&geocodificar=TRUE&metodo=puertas";   
+    }     
+    
+        else if (dato == 'bar') {
+   var dato1 = "barrio";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura       
+    }      
+        else if (dato == 'com') {
+   var dato1 = "comuna";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura 
+    }
+        else if (dato == 'norm') {
+   var dato1 = "direccionesNormalizadas/0/direccion";
+   var url = "http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion="+calle+"+"+altura+"%2C+caba&geocodificar=TRUE&metodo=puertas";
+    }    
+         else if (dato == 'comi') {
+   var dato1 = "comisaria";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura 
+    }   
+          else if (dato == 'hosp') {
+   var dato1 = "area_hospitalaria";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura 
+    }      
+          else if (dato == 'sani') {
+   var dato1 = "region_sanitaria";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura 
+    }      
+          else if (dato == 'esc') {
+   var dato1 = "distrito_escolar";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura 
+    }        
+
+          else if (dato == 'x') {
+   var dato1 = "x";
+   var url = "http://ws.usig.buenosaires.gob.ar/geocoder/2.2/geocoding?cod_calle="+calle+"&altura="+altura 
+    }   
+
+          else if (dato == 'y') {
+   var dato1 = "y";
+   var url = "http://ws.usig.buenosaires.gob.ar/geocoder/2.2/geocoding?cod_calle="+calle+"&altura="+altura
+    }       
+          else if (dato == 'cpu') {
+   var dato1 = "codigo_de_planeamiento_urbano";
+   var url = "http://ws.usig.buenosaires.gob.ar/datos_utiles?calle="+calle+"&altura="+altura
+    }         
+    
+    
+    
+       
+    var res = UrlFetchApp.fetch(url);
+    
+      
+    
+if (dato == 'x' || dato == 'y') {
+   
+  var content0 = res.getContentText();
+  var content = content0.slice(1, -1);
+
+    }   
+          else  {
+   var content = res.getContentText();
+    }       
+
+    
+    var json = JSON.parse(content);
+       
+    var patharray = dato1.split("/");
+    //Logger.log(patharray);
+        
+    
+    for(var i=0;i<patharray.length;i++){
+      json = json[patharray[i]];
+    }
+    
+    //Logger.log(typeof(json));
+    
+    if(typeof(json) === "undefined"){
+      return "No encontrado";
+    } else if(typeof(json) === "object"){
+      var tempArr = [];
+      
+      for(var obj in json){
+        tempArr.push([obj,json[obj]]);
+      }
+      return tempArr;
+    } else if(typeof(json) !== "object") {
+      return json;
+    }
+  }
+  catch(err){
+    return "Error-------------";  
+  }
+  
+}
